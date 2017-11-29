@@ -11,10 +11,12 @@
 ```julia
 using Cxx, ROOT, Heist
 
+# Construct file list
 const filesDir = "/pnfs/GM2/mc/commission_mdc2_1033/runs_1509575000/1509575784"
-files = readlines(`find $filesDir -name 'gm2*.30?*'`)
+files = readlines(`find $filesDir -name 'gm2*.30?*'`)  # Pick a subset of the files
 hf = HeistFiles(files);
 
+# Specify some data we'll want
 trackRS = HeistRecordSpec(
              namespace     = "gm2truth",
              productType   = "TrackingActionArtRecordCollection",
@@ -22,23 +24,29 @@ trackRS = HeistRecordSpec(
              moduleLabel   = "artg4"
            )
 
-function pushTrackEnergies!(trackEs, trackHandle)
-    for i = 0: icxx"$trackHandle->size() - 1;"
-        push!(trackEs, icxx"(*$trackHandle)[$i].e;")
+# Function to fill an array with data (track energies)
+function pushTrackEnergies!(trackEs::Array{Float64,1}, trackHandle::Cxx.CppValue)
+    for i = 0: icxx"$trackHandle->size() - 1;"  # Note the C++ here and below
+        push!(trackEs, icxx"(*$trackHandle)[$i].e;")  # Maybe a better way to do this
     end
 end
 
-function loop(hf, maxEvents)
-    @assert maxEvents > 0
+# Event loop function
+function loop(hf::HeistFiles, maxEvents::Int)
 
-    for anEvent ∈ HeistEvents(hf, 200)
-        println( @cxx anEvent.galleryEvent->eventEntry() )
+    # Data will go here
+    trackEs = Float64[] ; sizehint!(trackEs, 500_000)
+
+    # Loop over events
+    for anEvent ∈ HeistEvents(hf, maxEvents)
+        println( @cxx anEvent.galleryEvent->eventEntry() )  # Note use of @cxx macro (-> always)
         tracks = getRecord(anEvent, trackRS)
         pushTrackEnergies!(trackEs, tracks)
     end
+
+    return trackEs
+
 end
 
-trackEs = Float64[]
-
-loop(hf, 1000)
+energies = loop(hf, 1000) # Process 1000 events
 ```

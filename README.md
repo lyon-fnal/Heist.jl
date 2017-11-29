@@ -22,17 +22,23 @@ trackRS = HeistRecordSpec(
              moduleLabel   = "artg4"
            )
 
-trackEs = Float64[]
-
 function pushTrackEnergies!(trackEs, trackHandle)
     for i = 0: icxx"$trackHandle->size() - 1;"
         push!(trackEs, icxx"(*$trackHandle)[$i].e;")
     end
 end
 
-for anEvent ∈ HeistEvents(hf, 200)
-    println( @cxx anEvent.galleryEvent->eventEntry() )
-    tracks = getRecord(anEvent, trackRS)
-    pushTrackEnergies!(trackEs, tracks)
+function loop(hf, maxEvents)
+    @assert maxEvents > 0
+
+    for anEvent ∈ HeistEvents(hf, 200)
+        println( @cxx anEvent.galleryEvent->eventEntry() )
+        tracks = getRecord(anEvent, trackRS)
+        pushTrackEnergies!(trackEs, tracks)
+    end
 end
+
+trackEs = Float64[]
+
+loop(hf, 1000)
 ```

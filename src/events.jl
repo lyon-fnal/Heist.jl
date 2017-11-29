@@ -3,14 +3,16 @@
    It can be used as an event loop. You create it by passing in a `HeistFiles`
    object that represents the files to run over and an integer `nMax` that is the maximum
    number of events to process. Set to zero if you want to process everything.
+
 # Examples
+
 ```julia
-julia> for anEvent ∈ HeistEvents(hf, 200)
-         println( @cxx anEvent.galleryEvent->eventEntry() )
-         tracks = getRecord(anEvent, tas)
-         ghosts = getRecord(anEvent, gds)
-         # ... do something with the objects ...
-       end
+for anEvent ∈ HeistEvents(hf, 200)
+   println( @cxx anEvent.galleryEvent->eventEntry() )
+   tracks = getRecord(anEvent, tas)
+   ghosts = getRecord(anEvent, gds)
+   # ... do something with the objects ...
+end
 ```
 """
 struct HeistEvents
@@ -30,6 +32,6 @@ Base.next(hes::HeistEvents, state::HeistEvent) = (nextEvent(state), state)
 
 Base.done(hes::HeistEvents, state::Void) = false
 Base.done(hes::HeistEvents, state::HeistEvent) = atEnd(state) ||
-                                         (hes.nDesired ≥ 0 && state.nSeen ≥ hes.nDesired)
+                                         (hes.nDesired > 0 && state.nSeen ≥ hes.nDesired)
 
 Base.eltype(::Type{HeistEvents}) = HeistEvent

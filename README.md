@@ -45,7 +45,6 @@ function loop(hf::HeistFiles, maxEvents::Int)
     end
 
     return trackEs
-
 end
 
 energies = loop(hf, 1000) # Process 1000 events

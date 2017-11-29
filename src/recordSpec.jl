@@ -13,7 +13,7 @@
             CalorimeterArtRecordCollection
 
        ! header is the path to the header for the product. It can be a relative path if you have issued
-         `addHeaderDir` (that's been done for `gm2DataProducts`).
+         `addHeaderDir` (that's been done for `gm2dataproducts`).
 
        ! moduleLabel is the module label name associated with the product
 

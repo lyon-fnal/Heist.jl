@@ -20,6 +20,9 @@ addHeaderDir(ENV["BOOST_INC"], kind=C_System)
 addHeaderDir(ENV["CETLIB_INC"], kind=C_System)
 addHeaderDir(ENV["CETLIB_EXCEPT_INC"], kind=C_System)
 addHeaderDir(ENV["FHICLCPP_INC"], kind=C_System)
+addHeaderDir(ENV["MESSAGEFACILITY_INC"], kind=C_System)
+
+addHeaderDir(ENV["G4INCLUDE"], kind=C_System)
 
 addHeaderDir(ENV["GM2RINGSIM_INC"], kind=C_System)
 addHeaderDir(ENV["GM2DATAPRODUCTS_INC"], kind=C_System)
